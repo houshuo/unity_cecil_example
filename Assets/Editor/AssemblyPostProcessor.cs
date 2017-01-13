@@ -4,11 +4,12 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.Callbacks;
 using UnityEngine;
 
-[InitializeOnLoad]
 public static class AssemblyPostProcessor
 {
+	[DidReloadScripts]
     static AssemblyPostProcessor()
     {
         try
@@ -136,6 +137,8 @@ public static class AssemblyPostProcessor
                             Instruction last = methodDefinition.Body.Instructions[methodDefinition.Body.Instructions.Count - 1];
                             ilProcessor.InsertBefore( last, Instruction.Create( OpCodes.Ldstr, "Exit " + typeDefinition.FullName + "." + methodDefinition.Name ) );
                             ilProcessor.InsertBefore( last, Instruction.Create( OpCodes.Call, logMethodReference ) );
+
+							typeDefinition.Fields.Add (new FieldDefinition (methodDefinition.FullName + "_", FieldAttributes.Private, moduleDefinition.TypeSystem.Int32));
 
                             wasProcessed = true;
                             logAttribute = customAttribute;
