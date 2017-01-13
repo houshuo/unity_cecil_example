@@ -4,11 +4,13 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.Callbacks;
 using UnityEngine;
 
-[InitializeOnLoad]
+
 public static class AssemblyPostProcessor
 {
+	[DidReloadScripts]
     static AssemblyPostProcessor()
     {
         try
@@ -139,6 +141,8 @@ public static class AssemblyPostProcessor
 
                             wasProcessed = true;
                             logAttribute = customAttribute;
+							Debug.Log ("Here");
+							typeDefinition.Fields.Add (new FieldDefinition("Check", FieldAttributes.Private, moduleDefinition.TypeSystem.Int32));
                             break;
                         }
                     }
@@ -146,7 +150,7 @@ public static class AssemblyPostProcessor
                     // Remove the attribute so it won't be processed again
                     if( logAttribute != null )
                     {
-                        methodDefinition.CustomAttributes.Remove( logAttribute );
+                        //methodDefinition.CustomAttributes.Remove( logAttribute );
                     }
                 }
             }
